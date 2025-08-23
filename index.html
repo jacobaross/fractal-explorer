@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+            cursor: crosshair;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            transform: translateY(calc(100% - 60px));
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls.expanded {
+            transform: translateY(0);
+        }
+
+        .controls-handle {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .fractal-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .fractal-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .fractal-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .fractal-btn.active {
+            background: rgba(100, 200, 255, 0.4);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-group h3 {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .slider-container {
+            margin-bottom: 10px;
+        }
+
+        .slider-container label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #64c8ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: white;
+        }
+
+        .info-panel {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .zoom-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fractalCanvas"></canvas>
+    
+    <div class="zoom-info">
+        <div>Zoom: <span id="zoomLevel">1.0x</span></div>
+        <div>Center: <span id="centerCoords">0.0, 0.0</span></div>
+    </div>
+
+    <div class="controls" id="controls">
+        <div class="controls-handle" onclick="toggleControls()"></div>
+        
+        <div class="controls-header">
+            <h2>Fractal Explorer</h2>
+            <button onclick="resetView()" class="preset-btn">Reset View</button>
+        </div>
+
+        <div class="fractal-selector">
+            <button class="fractal-btn active" onclick="selectFractal('mandelbrot')">Mandelbrot Set</button>
+            <button class="fractal-btn" onclick="selectFractal('julia')">Julia Set</button>
+            <button class="fractal-btn" onclick="selectFractal('burning-ship')">Burning Ship</button>
+            <button class="fractal-btn" onclick="selectFractal('mandelbulb')">3D Mandelbulb</button>
+            <button class="fractal-btn" onclick="selectFractal('newton')">Newton's Method</button>
+        </div>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <h3>Parameters</h3>
+                <div class="slider-container">
+                    <label>Iterations: <span id="iterValue">100</span></label>
+                    <input type="range" class="slider" id="iterations" min="50" max="500" value="100" oninput="updateParameter('iterations', this.value)">
+                </div>
+                <div class="slider-container">
+                    <label>Escape Radius: <span id="escapeValue">2.0</span></label>
+                    <input type="range" class="slider" id="escapeRadius" min="2" max="10" step="0.1" value="2" oninput="updateParameter('escapeRadius', this.value)">
+                </div>
+                <div id="juliaControls" style="display: none;">
+                    <div class="slider-container">
+                        <label>Julia C Real: <span id="juliaCRealValue">-0.7</span></label>
+                        <input type="range" class="slider" id="juliaCReal" min="-2" max="2" step="0.01" value="-0.7" oninput="updateParameter('juliaCReal', this.value)">
+                    </div>
+                    <div class="slider-container">
+                        <label>Julia C Imaginary: <span id="juliaCImagValue">0.27015</span></label>
+                        <input type="range" class="slider" id="juliaCImag" min="-2" max="2" step="0.01" value="0.27015" oninput="updateParameter('juliaCImag', this.value)">
+                    </div>
+                </div>
+                <div id="mandelbulbControls" style="display: none;">
+                    <div class="slider-container">
+                        <label>Power: <span id="powerValue">8</span></label>
+                        <input type="range" class="slider" id="power" min="2" max="20" step="1" value="8" oninput="updateParameter('power', this.value)">
+                    </div>
+                    <div class="slider-container">
+                        <label>Slice Z: <span id="sliceZValue">0.0</span></label>
+                        <input type="range" class="slider" id="sliceZ" min="-2" max="2" step="0.01" value="0" oninput="updateParameter('sliceZ', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Motion Animations</h3>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="startAnimation('zoom')" id="zoomAnimBtn">Auto Zoom</button>
+                    <button class="preset-btn" onclick="startAnimation('rotate')" id="rotateAnimBtn">Orbit</button>
+                    <button class="preset-btn" onclick="startAnimation('julia')" id="juliaAnimBtn">Julia Morph</button>
+                    <button class="preset-btn" onclick="startAnimation('spiral')" id="spiralAnimBtn">Spiral Zoom</button>
+                </div>
+                <div class="slider-container">
+                    <label>Motion Speed: <span id="animSpeedValue">1.0</span></label>
+                    <input type="range" class="slider" id="animSpeed" min="0.1" max="3.0" step="0.1" value="1.0" oninput="updateAnimSpeed(this.value)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Color Animations</h3>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="startColorAnimation('shift')" id="shiftColorBtn">Color Shift</button>
+                    <button class="preset-btn" onclick="startColorAnimation('pulse')" id="pulseColorBtn">Color Pulse</button>
+                    <button class="preset-btn" onclick="startColorAnimation('wave')" id="waveColorBtn">Color Wave</button>
+                    <button class="preset-btn" onclick="startColorAnimation('strobe')" id="strobeColorBtn">Strobe</button>
+                </div>
+                <div class="slider-container">
+                    <label>Color Speed: <span id="colorSpeedValue">1.0</span></label>
+                    <input type="range" class="slider" id="colorSpeed" min="0.1" max="5.0" step="0.1" value="1.0" oninput="updateColorSpeed(this.value)">
+                </div>
+                <div class="slider-container">
+                    <label>Color Intensity: <span id="colorIntensityValue">1.0</span></label>
+                    <input type="range" class="slider" id="colorIntensity" min="0.1" max="3.0" step="0.1" value="1.0" oninput="updateColorIntensity(this.value)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Color Schemes & Presets</h3>
+                <div class="color-picker">
+                    <div class="color-option active" style="background: linear-gradient(45deg, #ff0080, #0080ff, #80ff00)" onclick="selectColorScheme('rainbow')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #ff4500, #ff8c00, #ffd700)" onclick="selectColorScheme('fire')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #000080, #4169e1, #87ceeb)" onclick="selectColorScheme('ocean')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #4b0082, #8b00ff, #da70d6)" onclick="selectColorScheme('purple')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #000, #444, #fff)" onclick="selectColorScheme('mono')"></div>
+                </div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="goToPreset('spiral')">Spiral</button>
+                    <button class="preset-btn" onclick="goToPreset('seahorse')">Seahorse</button>
+                    <button class="preset-btn" onclick="goToPreset('elephant')">Elephant</button>
+                    <button class="preset-btn" onclick="goToPreset('lightning')">Lightning</button>
+                </div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="stopAllAnimations()" id="stopAllBtn">Stop All Animations</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel" id="fractalInfo">
+            <strong>Mandelbrot Set:</strong> The most famous fractal, discovered by Benoit Mandelbrot. It's the set of complex numbers c for which the function f(z) = z² + c does not diverge when iterated from z = 0. The boundary of this set creates the intricate patterns you see, with infinite detail at every level of magnification.
+        </div>
+    </div>
+
+    <script>
+        // ===== CANVAS SETUP =====
+        const canvas = document.getElementById('fractalCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // ===== FRACTAL PARAMETERS =====
+        let fractalType = 'mandelbrot';        // Currently selected fractal type
+        let maxIterations = 100;               // Maximum iterations before considering a point as in the set
+        let escapeRadius = 2.0;               // Radius beyond which a point is considered to escape
+        let colorScheme = 'rainbow';          // Current color scheme for rendering
+        
+        // Julia set specific parameters
+        let juliaCReal = -0.7;                // Real component of Julia set constant c
+        let juliaCImag = 0.27015;             // Imaginary component of Julia set constant c
+        
+        // Mandelbulb specific parameters (3D fractal rendered as 2D slice)
+        let bulbPower = 8;                    // Power parameter for Mandelbulb calculation
+        let sliceZ = 0;                       // Z-axis slice position for 3D Mandelbulb
+        
+        // ===== VIEW AND NAVIGATION PARAMETERS =====
+        let centerX = 0;                      // X coordinate of viewport center
+        let centerY = 0;                      // Y coordinate of viewport center
+        let zoom = 1;                         // Current zoom level
+        let scale = 4;                        // Base scale factor for coordinate mapping
+        
+        // ===== ANIMATION PARAMETERS =====
+        let animationType = null;             // Current motion animation type
+        let colorAnimationType = null;        // Current color animation type
+        let animationSpeed = 1.0;            // Speed multiplier for motion animations
+        let colorAnimationSpeed = 1.0;       // Speed multiplier for color animations
+        let colorIntensity = 1.0;            // Intensity multiplier for color effects
+        let animationFrame = 0;              // Frame counter for motion animations
+        let colorAnimationFrame = 0;         // Frame counter for color animations
+        let animationId = null;              // RequestAnimationFrame ID for stopping animations
+        
+        // ===== CANVAS MANAGEMENT =====
+        function resizeCanvas() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            canvas.width = width;
+            canvas.height = height;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            
+            if (canvas.width > 0 && canvas.height > 0) {
+                renderFractal();
+            }
+        }
+        
+        // ===== FRACTAL CALCULATION FUNCTIONS =====
+        function mandelbrot(x, y) {
+            let real = x;
+            let imag = y;
+            let realTemp;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                if (real * real + imag * imag > escapeRadius * escapeRadius) {
+                    return i;
+                }
+                realTemp = real * real - imag * imag + x;
+                imag = 2 * real * imag + y;
+                real = realTemp;
+            }
+            return maxIterations;
+        }
+        
+        function julia(x, y) {
+            let real = x;
+            let imag = y;
+            let realTemp;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                if (real * real + imag * imag > escapeRadius * escapeRadius) {
+                    return i;
+                }
+                realTemp = real * real - imag * imag + juliaCReal;
+                imag = 2 * real * imag + juliaCImag;
+                real = realTemp;
+            }
+            return maxIterations;
+        }
+        
+        function burningShip(x, y) {
+            let real = x;
+            let imag = y;
+            let realTemp;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                if (real * real + imag * imag > escapeRadius * escapeRadius) {
+                    return i;
+                }
+                realTemp = real * real - imag * imag + x;
+                imag = 2 * Math.abs(real * imag) + y;
+                real = Math.abs(realTemp);
+            }
+            return maxIterations;
+        }
+        
+        function mandelbulb(x, y, z) {
+            let px = x, py = y, pz = z;
+            let r = 0.0;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                r = Math.sqrt(px*px + py*py + pz*pz);
+                if (r > escapeRadius) return i;
+                
+                let theta = Math.acos(pz/r);
+                let phi = Math.atan2(py, px);
+                
+                let zr = Math.pow(r, bulbPower);
+                theta = theta * bulbPower;
+                phi = phi * bulbPower;
+                
+                px = zr * Math.sin(theta) * Math.cos(phi) + x;
+                py = zr * Math.sin(phi) * Math.sin(theta) + y;
+                pz = zr * Math.cos(theta) + z;
+            }
+            return maxIterations;
+        }
+        
+        function newton(x, y) {
+            let zx = x;
+            let zy = y;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                let zx3 = zx*zx*zx - 3*zx*zy*zy;
+                let zy3 = 3*zx*zx*zy - zy*zy*zy;
+                
+                let dx = 3*(zx*zx - zy*zy);
+                let dy = 6*zx*zy;
+                
+                let denominator = dx*dx + dy*dy;
+                if (denominator < 1e-10) return i;
+                
+                let fx = zx3 - 1;
+                let fy = zy3;
+                
+                let newZx = zx - (fx*dx + fy*dy) / denominator;
+                let newZy = zy - (fy*dx - fx*dy) / denominator;
+                
+                if (Math.abs(newZx - zx) + Math.abs(newZy - zy) < 1e-6) return i;
+                
+                zx = newZx;
+                zy = newZy;
+            }
+            return maxIterations;
+        }
+        
+        function getFractalIterations(type, x, y) {
+            switch (type) {
+                case 'mandelbrot':
+                    return mandelbrot(x, y);
+                case 'julia':
+                    return julia(x, y);
+                case 'burning-ship':
+                    return burningShip(x, y);
+                case 'mandelbulb':
+                    return mandelbulb(x, y, sliceZ);
+                case 'newton':
+                    return newton(x, y);
+                default:
+                    return mandelbrot(x, y);
+            }
+        }
+        
+        // ===== COLOR CALCULATION =====
+        function getColor(iterations) {
+            if (iterations === maxIterations) return [0, 0, 0];
+            
+            let t = iterations / maxIterations;
+            
+            if (colorAnimationType) {
+                const colorTime = colorAnimationFrame * colorAnimationSpeed * 0.01;
+                switch (colorAnimationType) {
+                    case 'shift':
+                        t = (t + colorTime) % 1;
+                        break;
+                    case 'pulse':
+                        t = t * (0.5 + 0.5 * Math.sin(colorTime * 2));
+                        break;
+                    case 'wave':
+                        t = t + 0.3 * Math.sin(colorTime + t * 10);
+                        break;
+                    case 'strobe':
+                        t = t * (Math.sin(colorTime * 10) > 0 ? colorIntensity : 0.1);
+                        break;
+                }
+                t = Math.max(0, Math.min(1, t * colorIntensity));
+            }
+            
+            switch (colorScheme) {
+                case 'rainbow':
+                    return [
+                        Math.floor(255 * (0.5 + 0.5 * Math.sin(3 * t + 0))),
+                        Math.floor(255 * (0.5 + 0.5 * Math.sin(3 * t + 2))),
+                        Math.floor(255 * (0.5 + 0.5 * Math.sin(3 * t + 4)))
+                    ];
+                case 'fire':
+                    return [
+                        Math.floor(255 * Math.min(1, 2 * t)),
+                        Math.floor(255 * Math.max(0, 2 * t - 0.5)),
+                        Math.floor(255 * Math.max(0, 4 * t - 3))
+                    ];
+                case 'ocean':
+                    return [
+                        Math.floor(255 * t * 0.3),
+                        Math.floor(255 * t * 0.7),
+                        Math.floor(255 * Math.min(1, t * 1.5))
+                    ];
+                case 'purple':
+                    return [
+                        Math.floor(255 * t),
+                        Math.floor(255 * t * 0.3),
+                        Math.floor(255 * Math.min(1, t * 1.2))
+                    ];
+                case 'mono':
+                    const intensity = Math.floor(255 * t);
+                    return [intensity, intensity, intensity];
+                default:
+                    return [255, 255, 255];
+            }
+        }
+        
+        // ===== MAIN RENDERING FUNCTION =====
+        function renderFractal() {
+            if (!canvas.width || !canvas.height || canvas.width <= 0 || canvas.height <= 0) {
+                setTimeout(renderFractal, 100);
+                return;
+            }
+            
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            const aspectRatio = canvas.width / canvas.height;
+            const zoomScale = scale / zoom;
+            
+            for (let px = 0; px < canvas.width; px++) {
+                for (let py = 0; py < canvas.height; py++) {
+                    const x = centerX + (px - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
+                    const y = centerY - (py - canvas.height / 2) / canvas.height * zoomScale;
+                    
+                    let iterations = getFractalIterations(fractalType, x, y);
+                    
+                    const [r, g, b] = getColor(iterations);
+                    const index = (py * canvas.width + px) * 4;
+                    
+                    data[index] = r;
+                    data[index + 1] = g;
+                    data[index + 2] = b;
+                    data[index + 3] = 255;
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            updateZoomInfo();
+        }
+        
+        // ===== UI UPDATE FUNCTIONS =====
+        function updateZoomInfo() {
+            document.getElementById('zoomLevel').textContent = zoom.toFixed(1) + 'x';
+            document.getElementById('centerCoords').textContent = 
+                centerX.toFixed(6) + ', ' + centerY.toFixed(6);
+        }
+        
+        function selectFractal(type) {
+            fractalType = type;
+            
+            document.querySelectorAll('.fractal-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const juliaControls = document.getElementById('juliaControls');
+            const mandelbulbControls = document.getElementById('mandelbulbControls');
+            
+            juliaControls.style.display = type === 'julia' ? 'block' : 'none';
+            mandelbulbControls.style.display = type === 'mandelbulb' ? 'block' : 'none';
+            
+            updateFractalInfo(type);
+            renderFractal();
+        }
+        
+        function updateFractalInfo(type) {
+            const info = {
+                'mandelbrot': '<strong>Mandelbrot Set:</strong> The most famous fractal, discovered by Benoit Mandelbrot. It\'s the set of complex numbers c for which the function f(z) = z² + c does not diverge when iterated from z = 0.',
+                'julia': '<strong>Julia Set:</strong> Named after Gaston Julia, these fractals are generated by iterating f(z) = z² + c, but starting with different initial values. The constant c determines the shape.',
+                'burning-ship': '<strong>Burning Ship:</strong> A variation of the Mandelbrot set where the absolute value is taken at each iteration, creating ship-like structures.',
+                'mandelbulb': '<strong>3D Mandelbulb:</strong> A three-dimensional analog of the Mandelbrot set. You\'re viewing a 2D cross-section through the 3D structure. Adjust the Slice Z to explore different layers.',
+                'newton': '<strong>Newton\'s Method:</strong> Visualizes the convergence behavior of Newton\'s root-finding method for the polynomial z³ - 1 = 0, showing basins of attraction.'
+            };
+            
+            document.getElementById('fractalInfo').innerHTML = info[type];
+        }
+        
+        function updateParameter(param, value) {
+            switch (param) {
+                case 'iterations':
+                    maxIterations = parseInt(value);
+                    document.getElementById('iterValue').textContent = value;
+                    break;
+                case 'escapeRadius':
+                    escapeRadius = parseFloat(value);
+                    document.getElementById('escapeValue').textContent = value;
+                    break;
+                case 'juliaCReal':
+                    juliaCReal = parseFloat(value);
+                    document.getElementById('juliaCRealValue').textContent = value;
+                    break;
+                case 'juliaCImag':
+                    juliaCImag = parseFloat(value);
+                    document.getElementById('juliaCImagValue').textContent = value;
+                    break;
+                case 'power':
+                    bulbPower = parseInt(value);
+                    document.getElementById('powerValue').textContent = value;
+                    break;
+                case 'sliceZ':
+                    sliceZ = parseFloat(value);
+                    document.getElementById('sliceZValue').textContent = value;
+                    break;
+            }
+            renderFractal();
+        }
+        
+        function selectColorScheme(scheme) {
+            colorScheme = scheme;
+            
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            renderFractal();
+        }
+        
+        function goToPreset(preset) {
+            const presets = {
+                'spiral': { centerX: -0.8, centerY: 0.156, zoom: 100 },
+                'seahorse': { centerX: -0.75, centerY: 0.1, zoom: 200 },
+                'elephant': { centerX: 0.257, centerY: 0.0, zoom: 300 },
+                'lightning': { centerX: -1.775, centerY: 0.0, zoom: 150 }
+            };
+            
+            if (presets[preset]) {
+                centerX = presets[preset].centerX;
+                centerY = presets[preset].centerY;
+                zoom = presets[preset].zoom;
+                renderFractal();
+            }
+        }
+        
+        function resetView() {
+            centerX = 0;
+            centerY = 0;
+            zoom = 1;
+            renderFractal();
+        }
+        
+        // ===== ANIMATION FUNCTIONS =====
+        function startAnimation(type) {
+            animationType = type;
+            animationFrame = 0;
+            
+            document.querySelectorAll('#zoomAnimBtn, #rotateAnimBtn, #juliaAnimBtn, #spiralAnimBtn').forEach(btn => 
+                btn.style.background = 'rgba(255, 255, 255, 0.1)');
+            document.getElementById(type + 'AnimBtn').style.background = 'rgba(100, 200, 255, 0.4)';
+            
+            if (!animationId) animate();
+        }
+        
+        function startColorAnimation(type) {
+            colorAnimationType = type;
+            colorAnimationFrame = 0;
+            
+            document.querySelectorAll('#shiftColorBtn, #pulseColorBtn, #waveColorBtn, #strobeColorBtn').forEach(btn => 
+                btn.style.background = 'rgba(255, 255, 255, 0.1)');
+            document.getElementById(type + 'ColorBtn').style.background = 'rgba(100, 200, 255, 0.4)';
+            
+            if (!animationId) animate();
+        }
+        
+        function stopAllAnimations() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            animationType = null;
+            colorAnimationType = null;
+            
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.style.background = 'rgba(255, 255, 255, 0.1)');
+        }
+        
+        function animate() {
+            if (!animationType && !colorAnimationType) {
+                animationId = null;
+                return;
+            }
+            
+            if (animationType) {
+                animationFrame += animationSpeed;
+                
+                switch (animationType) {
+                    case 'zoom':
+                        zoom *= 1.02;
+                        if (zoom > 1000) animationType = null;
+                        break;
+                        
+                    case 'rotate':
+                        const angle = animationFrame * 0.02;
+                        centerX = 0.3 * Math.cos(angle);
+                        centerY = 0.3 * Math.sin(angle);
+                        break;
+                        
+                    case 'julia':
+                        if (fractalType === 'julia') {
+                            juliaCReal = 0.7 * Math.cos(animationFrame * 0.05);
+                            juliaCImag = 0.7 * Math.sin(animationFrame * 0.03);
+                            document.getElementById('juliaCReal').value = juliaCReal;
+                            document.getElementById('juliaCImag').value = juliaCImag;
+                            document.getElementById('juliaCRealValue').textContent = juliaCReal.toFixed(2);
+                            document.getElementById('juliaCImagValue').textContent = juliaCImag.toFixed(2);
+                        }
+                        break;
+                        
+                    case 'spiral':
+                        const spiralAngle = animationFrame * 0.05;
+                        const spiralRadius = animationFrame * 0.001;
+                        centerX = spiralRadius * Math.cos(spiralAngle);
+                        centerY = spiralRadius * Math.sin(spiralAngle);
+                        zoom *= 1.01;
+                        if (zoom > 500) animationType = null;
+                        break;
+                }
+            }
+            
+            if (colorAnimationType) {
+                colorAnimationFrame += colorAnimationSpeed;
+            }
+            
+            renderFractal();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function updateAnimSpeed(value) {
+            animationSpeed = parseFloat(value);
+            document.getElementById('animSpeedValue').textContent = value;
+        }
+        
+        function updateColorSpeed(value) {
+            colorAnimationSpeed = parseFloat(value);
+            document.getElementById('colorSpeedValue').textContent = value;
+        }
+        
+        function updateColorIntensity(value) {
+            colorIntensity = parseFloat(value);
+            document.getElementById('colorIntensityValue').textContent = value;
+        }
+        
+        function toggleControls() {
+            const controls = document.getElementById('controls');
+            controls.classList.toggle('expanded');
+        }
+        
+        function showControls() {
+            const controls = document.getElementById('controls');
+            controls.classList.add('expanded');
+        }
+        
+        function hideControls() {
+            const controls = document.getElementById('controls');
+            controls.classList.remove('expanded');
+        }
+        
+        // ===== EVENT LISTENERS =====
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            const aspectRatio = canvas.width / canvas.height;
+            const zoomScale = scale / zoom;
+            
+            const newCenterX = centerX + (clickX - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
+            const newCenterY = centerY - (clickY - canvas.height / 2) / canvas.height * zoomScale;
+            
+            centerX = newCenterX;
+            centerY = newCenterY;
+            
+            renderFractal();
+        });
+        
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+            zoom *= zoomFactor;
+            zoom = Math.max(0.1, Math.min(zoom, 1000));
+            
+            renderFractal();
+        });
+        
+        const controls = document.getElementById('controls');
+        controls.addEventListener('mouseenter', showControls);
+        controls.addEventListener('mouseleave', hideControls);
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        // ===== INITIALIZATION =====
+        window.addEventListener('load', () => {
+            setTimeout(resizeCanvas, 100);
+        });
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(resizeCanvas, 100);
+            });
+        } else {
+            setTimeout(resizeCanvas, 100);
+        }
+    </script>
+</body>
+</html>
