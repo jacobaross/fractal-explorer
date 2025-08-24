@@ -213,21 +213,161 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Full-screen mode styles */
-        .fullscreen-mode .controls {
-            transform: translateY(100%);
-            pointer-events: none;
+        .shortcuts-help .key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 11px;
         }
 
-        .fullscreen-mode .zoom-info {
+        /* Save/Share System */
+        .share-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .share-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .share-panel h3 {
+            margin: 0 0 15px 0;
+            color: #64c8ff;
+        }
+
+        .share-url {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-family: monospace;
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Screenshot/Export */
+        .export-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .export-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .export-options {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .export-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .export-option input[type="radio"] {
+            accent-color: #64c8ff;
+        }
+
+        /* Performance Settings */
+        .performance-indicator {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .fullscreen-btn {
+        .performance-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Fractal History */
+        .history-controls {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .history-btn {
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -235,224 +375,105 @@
             padding: 8px 12px;
             cursor: pointer;
             font-size: 12px;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
-        .fullscreen-btn:hover {
+        .history-btn:hover {
             background: rgba(0, 0, 0, 0.8);
-            transform: scale(1.05);
         }
 
-        .fullscreen-mode .fullscreen-btn {
-            background: rgba(255, 255, 255, 0.2);
+        .history-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Advanced Math Controls */
+        .math-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+        }
+
+        .math-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 8px;
             color: white;
+            font-family: monospace;
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 10px;
         }
 
-        /* Loading animation */
-        .loading-overlay {
+        .math-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .complex-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #64c8ff;
+            margin-top: 10px;
+        }
+
+        /* 3D Navigation */
+        .mandelbulb-3d-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .view-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .view-btn.active {
+            background: rgba(100, 200, 255, 0.4);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+
+        /* Overlay backdrop */
+        .overlay-backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2999;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
 
-        .loading-overlay.visible {
+        .overlay-backdrop.visible {
             opacity: 1;
             pointer-events: all;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid #64c8ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: white;
-            margin-top: 15px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        /* Background patterns */
-        .controls::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(100, 200, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 100, 200, 0.1) 0%, transparent 50%),
-                linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.02) 50%, transparent 60%);
-            pointer-events: none;
-            border-radius: 20px 20px 0 0;
-        }
-
-        /* Enhanced color schemes */
-        .color-picker {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .color-option {
-            width: 35px;
-            height: 35px;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .color-option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: inherit;
-            transition: transform 0.3s ease;
-        }
-
-        .color-option:hover::before {
-            transform: scale(1.1);
-        }
-
-        .color-option.active {
-            border-color: white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Mobile touch improvements */
-        @media (max-width: 768px) {
-            .controls {
-                padding: 15px;
-                transform: translateY(calc(100% - 50px));
-            }
-
-            .controls-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .fractal-selector {
-                gap: 5px;
-            }
-
-            .fractal-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .color-picker {
-                grid-template-columns: repeat(5, 1fr);
-            }
-
-            .color-option {
-                width: 30px;
-                height: 30px;
-            }
-
-            .zoom-info {
-                top: 10px;
-                right: 10px;
-                padding: 8px 12px;
-                font-size: 11px;
-            }
-
-            .fullscreen-btn {
-                top: 10px;
-                left: 10px;
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-        }
-
-        /* Smooth color transitions */
-        canvas {
-            transition: filter 0.5s ease;
-        }
-
-        .color-transition {
-            animation: colorShift 2s ease-in-out;
-        }
-
-        @keyframes colorShift {
-            0%, 100% { filter: hue-rotate(0deg) saturate(1); }
-            50% { filter: hue-rotate(180deg) saturate(1.2); }
-        }
-
-        /* Keyboard shortcuts help */
-        .shortcuts-help {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.4;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-            z-index: 1001;
-        }
-
-        .shortcuts-help.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .shortcuts-help h4 {
-            margin: 0 0 8px 0;
-            color: #64c8ff;
-        }
-
-        .shortcuts-help ul {
-            margin: 0;
-            padding-left: 15px;
-        }
-
-        .shortcuts-help li {
-            margin-bottom: 3px;
-        }
-
-        .shortcuts-help .key {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            font-size: 11px;
         }
     </style>
 </head>
@@ -470,6 +491,53 @@
     <!-- Full-screen button -->
     <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Fullscreen</button>
     
+    <!-- Performance indicator -->
+    <div class="performance-indicator" id="performanceIndicator">
+        Performance: <span id="performanceLevel">High</span>
+    </div>
+    
+    <!-- Fractal history controls -->
+    <div class="history-controls">
+        <button class="history-btn" onclick="goBack()" id="backBtn">← Back</button>
+        <button class="history-btn" onclick="goForward()" id="forwardBtn">Forward →</button>
+    </div>
+    
+    <!-- Share panel -->
+    <div class="overlay-backdrop" id="overlayBackdrop" onclick="closeAllPanels()"></div>
+    <div class="share-panel" id="sharePanel">
+        <h3>Share Fractal View</h3>
+        <input type="text" class="share-url" id="shareUrl" readonly>
+        <div class="share-buttons">
+            <button class="share-btn" onclick="copyShareUrl()">📋 Copy URL</button>
+            <button class="share-btn" onclick="shareOnTwitter()">🐦 Twitter</button>
+            <button class="share-btn" onclick="shareOnFacebook()">📘 Facebook</button>
+            <button class="share-btn" onclick="closeSharePanel()">✕ Close</button>
+        </div>
+    </div>
+    
+    <!-- Export panel -->
+    <div class="export-panel" id="exportPanel">
+        <h3>Export Fractal</h3>
+        <div class="export-options">
+            <label class="export-option">
+                <input type="radio" name="exportFormat" value="png" checked>
+                PNG Image (High Quality)
+            </label>
+            <label class="export-option">
+                <input type="radio" name="exportFormat" value="jpg">
+                JPEG Image (Smaller Size)
+            </label>
+            <label class="export-option">
+                <input type="radio" name="exportFormat" value="svg">
+                SVG Vector (Scalable)
+            </label>
+        </div>
+        <div class="share-buttons">
+            <button class="share-btn" onclick="exportFractal()">💾 Export</button>
+            <button class="share-btn" onclick="closeExportPanel()">✕ Close</button>
+        </div>
+    </div>
+    
     <!-- Keyboard shortcuts help -->
     <div class="shortcuts-help" id="shortcutsHelp">
         <h4>Keyboard Shortcuts</h4>
@@ -477,6 +545,8 @@
             <li><span class="key">R</span> - Reset view</li>
             <li><span class="key">Space</span> - Stop animations</li>
             <li><span class="key">F</span> - Toggle fullscreen</li>
+            <li><span class="key">S</span> - Save/Share</li>
+            <li><span class="key">E</span> - Export screenshot</li>
             <li><span class="key">?</span> - Show/hide this help</li>
             <li><span class="key">Click</span> - Center view</li>
             <li><span class="key">Scroll</span> - Zoom in/out</li>
@@ -502,6 +572,8 @@
             <button class="fractal-btn" onclick="selectFractal('burning-ship')">Burning Ship</button>
             <button class="fractal-btn" onclick="selectFractal('mandelbulb')">3D Mandelbulb</button>
             <button class="fractal-btn" onclick="selectFractal('newton')">Newton's Method</button>
+            <button class="fractal-btn" onclick="selectFractal('sierpinski')">Sierpinski</button>
+            <button class="fractal-btn" onclick="selectFractal('dragon')">Dragon Curve</button>
         </div>
 
         <div class="controls-grid">
@@ -592,6 +664,52 @@
                     <button class="preset-btn" onclick="stopAllAnimations()" id="stopAllBtn">Stop All Animations</button>
                 </div>
             </div>
+
+            <div class="control-group">
+                <h3>Save & Export</h3>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="openSharePanel()">📤 Share View</button>
+                    <button class="preset-btn" onclick="openExportPanel()">💾 Export Image</button>
+                </div>
+                <div class="slider-container">
+                    <label>Performance Quality: <span id="qualityValue">High</span></label>
+                    <input type="range" class="slider" id="performanceQuality" min="1" max="3" step="1" value="3" oninput="updatePerformanceQuality(this.value)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Advanced Math</h3>
+                <div class="math-panel" id="mathPanel">
+                    <div class="slider-container">
+                        <label>Custom Julia C Real: <span id="customJuliaRealValue">-0.7</span></label>
+                        <input type="text" class="math-input" id="customJuliaReal" placeholder="Enter real part (e.g., -0.7)" onchange="updateCustomJulia()">
+                    </div>
+                    <div class="slider-container">
+                        <label>Custom Julia C Imaginary: <span id="customJuliaImagValue">0.27015</span></label>
+                        <input type="text" class="math-input" id="customJuliaImag" placeholder="Enter imaginary part (e.g., 0.27015)" onchange="updateCustomJulia()">
+                    </div>
+                    <div class="complex-display" id="complexDisplay">
+                        Current: c = -0.7 + 0.27015i
+                    </div>
+                </div>
+                <div id="mandelbulb3dControls" style="display: none;">
+                    <div class="mandelbulb-3d-controls">
+                        <div class="slider-container">
+                            <label>Rotation X: <span id="rotXValue">0°</span></label>
+                            <input type="range" class="slider" id="rotX" min="0" max="360" value="0" oninput="update3DRotation()">
+                        </div>
+                        <div class="slider-container">
+                            <label>Rotation Y: <span id="rotYValue">0°</span></label>
+                            <input type="range" class="slider" id="rotY" min="0" max="360" value="0" oninput="update3DRotation()">
+                        </div>
+                    </div>
+                    <div class="view-controls">
+                        <button class="view-btn active" onclick="set3DView('xy')">XY Plane</button>
+                        <button class="view-btn" onclick="set3DView('xz')">XZ Plane</button>
+                        <button class="view-btn" onclick="set3DView('yz')">YZ Plane</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="info-panel" id="fractalInfo">
@@ -639,6 +757,20 @@
         let isLoading = false;                // Loading state
         let shortcutsVisible = false;         // Keyboard shortcuts help visibility
         let lastColorScheme = 'rainbow';      // Previous color scheme for smooth transitions
+        
+        // ===== INTERMEDIATE FEATURE PARAMETERS =====
+        let fractalHistory = [];              // Array to store fractal view history
+        let historyIndex = -1;                // Current position in history
+        let performanceQuality = 3;           // Performance quality level (1-3)
+        let sharePanelVisible = false;        // Share panel visibility
+        let exportPanelVisible = false;       // Export panel visibility
+        
+        // ===== ADVANCED MATH PARAMETERS =====
+        let customJuliaReal = -0.7;           // Custom Julia real component
+        let customJuliaImag = 0.27015;        // Custom Julia imaginary component
+        let rotX = 0;                         // 3D rotation X angle
+        let rotY = 0;                         // 3D rotation Y angle
+        let current3DView = 'xy';             // Current 3D view plane
         
         // ===== CANVAS MANAGEMENT =====
         function resizeCanvas() {
@@ -754,6 +886,49 @@
             return maxIterations;
         }
         
+        function sierpinski(x, y) {
+            // Sierpinski triangle using chaos game method
+            let px = x * 2 + 1;
+            let py = y * 2 + 1;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                let r = Math.random();
+                if (r < 0.33) {
+                    px = px * 0.5;
+                    py = py * 0.5;
+                } else if (r < 0.66) {
+                    px = px * 0.5 + 0.5;
+                    py = py * 0.5;
+                } else {
+                    px = px * 0.5 + 0.25;
+                    py = py * 0.5 + 0.5;
+                }
+                
+                if (px < 0 || px > 1 || py < 0 || py > 1) return i;
+            }
+            return maxIterations;
+        }
+        
+        function dragonCurve(x, y) {
+            // Dragon curve using L-system approximation
+            let px = x * 4 - 2;
+            let py = y * 4 - 2;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                let angle = i * Math.PI / 4;
+                let scale = Math.pow(0.707, i);
+                
+                let newX = px * Math.cos(angle) - py * Math.sin(angle);
+                let newY = px * Math.sin(angle) + py * Math.cos(angle);
+                
+                px = newX * scale;
+                py = newY * scale;
+                
+                if (Math.abs(px) > 2 || Math.abs(py) > 2) return i;
+            }
+            return maxIterations;
+        }
+        
         function getFractalIterations(type, x, y) {
             switch (type) {
                 case 'mandelbrot':
@@ -766,6 +941,10 @@
                     return mandelbulb(x, y, sliceZ);
                 case 'newton':
                     return newton(x, y);
+                case 'sierpinski':
+                    return sierpinski(x, y);
+                case 'dragon':
+                    return dragonCurve(x, y);
                 default:
                     return mandelbrot(x, y);
             }
@@ -821,41 +1000,12 @@
                         Math.floor(255 * t * 0.3),
                         Math.floor(255 * Math.min(1, t * 1.2))
                     ];
-                case 'neon':
-                    return [
-                        Math.floor(255 * Math.sin(t * Math.PI * 2)),
-                        Math.floor(255 * Math.sin(t * Math.PI * 2 + Math.PI / 3)),
-                        Math.floor(255 * Math.sin(t * Math.PI * 2 + 2 * Math.PI / 3))
-                    ];
-                case 'vintage':
-                    return [
-                        Math.floor(255 * (0.6 + 0.4 * Math.sin(t * Math.PI))),
-                        Math.floor(255 * (0.4 + 0.3 * Math.sin(t * Math.PI + 0.5))),
-                        Math.floor(255 * (0.2 + 0.2 * Math.sin(t * Math.PI + 1)))
-                    ];
-                case 'cosmic':
-                    return [
-                        Math.floor(255 * Math.pow(t, 0.5)),
-                        Math.floor(255 * Math.pow(t, 1.5)),
-                        Math.floor(255 * Math.min(1, Math.pow(t, 0.8) + 0.3))
-                    ];
                 case 'mono':
                     const intensity = Math.floor(255 * t);
                     return [intensity, intensity, intensity];
                 default:
                     return [255, 255, 255];
             }
-        }
-        
-        // ===== LOADING MANAGEMENT =====
-        function showLoading() {
-            isLoading = true;
-            document.getElementById('loadingOverlay').classList.add('visible');
-        }
-        
-        function hideLoading() {
-            isLoading = false;
-            document.getElementById('loadingOverlay').classList.remove('visible');
         }
         
         // ===== MAIN RENDERING FUNCTION =====
@@ -865,40 +1015,31 @@
                 return;
             }
             
-            // Show loading for complex renders
-            if (maxIterations > 200 || zoom > 100) {
-                showLoading();
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            const aspectRatio = canvas.width / canvas.height;
+            const zoomScale = scale / zoom;
+            
+            for (let px = 0; px < canvas.width; px++) {
+                for (let py = 0; py < canvas.height; py++) {
+                    const x = centerX + (px - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
+                    const y = centerY - (py - canvas.height / 2) / canvas.height * zoomScale;
+                    
+                    let iterations = getFractalIterations(fractalType, x, y);
+                    
+                    const [r, g, b] = getColor(iterations);
+                    const index = (py * canvas.width + px) * 4;
+                    
+                    data[index] = r;
+                    data[index + 1] = g;
+                    data[index + 2] = b;
+                    data[index + 3] = 255;
+                }
             }
             
-            // Use setTimeout to allow UI to update before heavy computation
-            setTimeout(() => {
-                const imageData = ctx.createImageData(canvas.width, canvas.height);
-                const data = imageData.data;
-                
-                const aspectRatio = canvas.width / canvas.height;
-                const zoomScale = scale / zoom;
-                
-                for (let px = 0; px < canvas.width; px++) {
-                    for (let py = 0; py < canvas.height; py++) {
-                        const x = centerX + (px - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
-                        const y = centerY - (py - canvas.height / 2) / canvas.height * zoomScale;
-                        
-                        let iterations = getFractalIterations(fractalType, x, y);
-                        
-                        const [r, g, b] = getColor(iterations);
-                        const index = (py * canvas.width + px) * 4;
-                        
-                        data[index] = r;
-                        data[index + 1] = g;
-                        data[index + 2] = b;
-                        data[index + 3] = 255;
-                    }
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-                updateZoomInfo();
-                hideLoading();
-            }, 10);
+            ctx.putImageData(imageData, 0, 0);
+            updateZoomInfo();
         }
         
         // ===== UI UPDATE FUNCTIONS =====
@@ -916,9 +1057,13 @@
             
             const juliaControls = document.getElementById('juliaControls');
             const mandelbulbControls = document.getElementById('mandelbulbControls');
+            const mandelbulb3dControls = document.getElementById('mandelbulb3dControls');
+            const mathPanel = document.getElementById('mathPanel');
             
             juliaControls.style.display = type === 'julia' ? 'block' : 'none';
             mandelbulbControls.style.display = type === 'mandelbulb' ? 'block' : 'none';
+            mandelbulb3dControls.style.display = type === 'mandelbulb' ? 'block' : 'none';
+            mathPanel.style.display = (type === 'julia' || type === 'mandelbulb') ? 'block' : 'none';
             
             updateFractalInfo(type);
             renderFractal();
@@ -930,7 +1075,9 @@
                 'julia': '<strong>Julia Set:</strong> Named after Gaston Julia, these fractals are generated by iterating f(z) = z² + c, but starting with different initial values. The constant c determines the shape.',
                 'burning-ship': '<strong>Burning Ship:</strong> A variation of the Mandelbrot set where the absolute value is taken at each iteration, creating ship-like structures.',
                 'mandelbulb': '<strong>3D Mandelbulb:</strong> A three-dimensional analog of the Mandelbrot set. You\'re viewing a 2D cross-section through the 3D structure. Adjust the Slice Z to explore different layers.',
-                'newton': '<strong>Newton\'s Method:</strong> Visualizes the convergence behavior of Newton\'s root-finding method for the polynomial z³ - 1 = 0, showing basins of attraction.'
+                'newton': '<strong>Newton\'s Method:</strong> Visualizes the convergence behavior of Newton\'s root-finding method for the polynomial z³ - 1 = 0, showing basins of attraction.',
+                'sierpinski': '<strong>Sierpinski Triangle:</strong> A self-similar fractal created by recursively subdividing a triangle. This implementation uses the chaos game method to generate the pattern.',
+                'dragon': '<strong>Dragon Curve:</strong> A space-filling curve that can be constructed by folding a strip of paper. This fractal shows the self-similar structure of the dragon curve.'
             };
             
             document.getElementById('fractalInfo').innerHTML = info[type];
@@ -967,15 +1114,10 @@
         }
         
         function selectColorScheme(scheme) {
-            lastColorScheme = colorScheme;
             colorScheme = scheme;
             
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Add smooth color transition effect
-            canvas.classList.add('color-transition');
-            setTimeout(() => canvas.classList.remove('color-transition'), 2000);
             
             renderFractal();
         }
@@ -1001,53 +1143,6 @@
             centerY = 0;
             zoom = 1;
             renderFractal();
-        }
-        
-        // ===== NEW FEATURE FUNCTIONS =====
-        
-        function toggleFullscreen() {
-            isFullscreen = !isFullscreen;
-            document.body.classList.toggle('fullscreen-mode', isFullscreen);
-            
-            const btn = document.getElementById('fullscreenBtn');
-            if (isFullscreen) {
-                btn.textContent = '⛶ Exit Fullscreen';
-                btn.style.background = 'rgba(255, 255, 255, 0.2)';
-            } else {
-                btn.textContent = '⛶ Fullscreen';
-                btn.style.background = 'rgba(0, 0, 0, 0.7)';
-            }
-        }
-        
-        function goToRandomLocation() {
-            const randomLocations = [
-                { centerX: -0.8, centerY: 0.156, zoom: 100, name: 'Spiral Valley' },
-                { centerX: -0.75, centerY: 0.1, zoom: 200, name: 'Seahorse Valley' },
-                { centerX: 0.257, centerY: 0.0, zoom: 300, name: 'Elephant Valley' },
-                { centerX: -1.775, centerY: 0.0, zoom: 150, name: 'Lightning Bolt' },
-                { centerX: -0.5, centerY: 0.5, zoom: 50, name: 'Mountain Range' },
-                { centerX: 0.285, centerY: 0.01, zoom: 400, name: 'Deep Valley' },
-                { centerX: -0.1, centerY: 0.8, zoom: 80, name: 'Northern Lights' },
-                { centerX: 0.4, centerY: -0.3, zoom: 120, name: 'Southern Cross' }
-            ];
-            
-            const randomLocation = randomLocations[Math.floor(Math.random() * randomLocations.length)];
-            centerX = randomLocation.centerX;
-            centerY = randomLocation.centerY;
-            zoom = randomLocation.zoom;
-            
-            // Also randomize color scheme
-            const colorSchemes = ['rainbow', 'fire', 'ocean', 'purple', 'neon', 'vintage', 'cosmic'];
-            const randomColor = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
-            selectColorScheme(randomColor);
-            
-            renderFractal();
-        }
-        
-        function toggleShortcutsHelp() {
-            shortcutsVisible = !shortcutsVisible;
-            const help = document.getElementById('shortcutsHelp');
-            help.classList.toggle('visible', shortcutsVisible);
         }
         
         // ===== ANIMATION FUNCTIONS =====
@@ -1165,6 +1260,291 @@
             controls.classList.remove('expanded');
         }
         
+        // ===== NEW FEATURE FUNCTIONS =====
+        
+        function toggleFullscreen() {
+            isFullscreen = !isFullscreen;
+            document.body.classList.toggle('fullscreen-mode', isFullscreen);
+            
+            const btn = document.getElementById('fullscreenBtn');
+            if (isFullscreen) {
+                btn.textContent = '⛶ Exit Fullscreen';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+            } else {
+                btn.textContent = '⛶ Fullscreen';
+                btn.style.background = 'rgba(0, 0, 0, 0.7)';
+            }
+        }
+        
+        function goToRandomLocation() {
+            const randomLocations = [
+                { centerX: -0.8, centerY: 0.156, zoom: 100, name: 'Spiral Valley' },
+                { centerX: -0.75, centerY: 0.1, zoom: 200, name: 'Seahorse Valley' },
+                { centerX: 0.257, centerY: 0.0, zoom: 300, name: 'Elephant Valley' },
+                { centerX: -1.775, centerY: 0.0, zoom: 150, name: 'Lightning Bolt' },
+                { centerX: -0.5, centerY: 0.5, zoom: 50, name: 'Mountain Range' },
+                { centerX: 0.285, centerY: 0.01, zoom: 400, name: 'Deep Valley' },
+                { centerX: -0.1, centerY: 0.8, zoom: 80, name: 'Northern Lights' },
+                { centerX: 0.4, centerY: -0.3, zoom: 120, name: 'Southern Cross' }
+            ];
+            
+            const randomLocation = randomLocations[Math.floor(Math.random() * randomLocations.length)];
+            centerX = randomLocation.centerX;
+            centerY = randomLocation.centerY;
+            zoom = randomLocation.zoom;
+            
+            // Also randomize color scheme
+            const colorSchemes = ['rainbow', 'fire', 'ocean', 'purple', 'neon', 'vintage', 'cosmic'];
+            const randomColor = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+            selectColorScheme(randomColor);
+            
+            renderFractal();
+        }
+        
+        function toggleShortcutsHelp() {
+            shortcutsVisible = !shortcutsVisible;
+            const help = document.getElementById('shortcutsHelp');
+            help.classList.toggle('visible', shortcutsVisible);
+        }
+        
+        // ===== INTERMEDIATE FEATURE FUNCTIONS =====
+        
+        function addToHistory() {
+            const currentState = {
+                centerX, centerY, zoom, fractalType, colorScheme,
+                maxIterations, escapeRadius, juliaCReal, juliaCImag,
+                bulbPower, sliceZ, rotX, rotY, current3DView
+            };
+            
+            // Remove any future history if we're not at the end
+            fractalHistory = fractalHistory.slice(0, historyIndex + 1);
+            fractalHistory.push(currentState);
+            historyIndex = fractalHistory.length - 1;
+            
+            // Limit history size
+            if (fractalHistory.length > 50) {
+                fractalHistory.shift();
+                historyIndex--;
+            }
+            
+            updateHistoryButtons();
+        }
+        
+        function goBack() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                loadFromHistory();
+            }
+        }
+        
+        function goForward() {
+            if (historyIndex < fractalHistory.length - 1) {
+                historyIndex++;
+                loadFromHistory();
+            }
+        }
+        
+        function loadFromHistory() {
+            if (historyIndex >= 0 && historyIndex < fractalHistory.length) {
+                const state = fractalHistory[historyIndex];
+                centerX = state.centerX;
+                centerY = state.centerY;
+                zoom = state.zoom;
+                fractalType = state.fractalType;
+                colorScheme = state.colorScheme;
+                maxIterations = state.maxIterations;
+                escapeRadius = state.escapeRadius;
+                juliaCReal = state.juliaCReal;
+                juliaCImag = state.juliaCImag;
+                bulbPower = state.bulbPower;
+                sliceZ = state.sliceZ;
+                rotX = state.rotX;
+                rotY = state.rotY;
+                current3DView = state.current3DView;
+                
+                updateUIFromState();
+                renderFractal();
+            }
+        }
+        
+        function updateHistoryButtons() {
+            document.getElementById('backBtn').disabled = historyIndex <= 0;
+            document.getElementById('forwardBtn').disabled = historyIndex >= fractalHistory.length - 1;
+        }
+        
+        function updateUIFromState() {
+            // Update UI elements to match current state
+            document.getElementById('iterations').value = maxIterations;
+            document.getElementById('iterValue').textContent = maxIterations;
+            document.getElementById('escapeRadius').value = escapeRadius;
+            document.getElementById('escapeValue').textContent = escapeRadius;
+            
+            // Update fractal type buttons
+            document.querySelectorAll('.fractal-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="selectFractal('${fractalType}')"]`).classList.add('active');
+        }
+        
+        function openSharePanel() {
+            sharePanelVisible = true;
+            document.getElementById('sharePanel').classList.add('visible');
+            document.getElementById('overlayBackdrop').classList.add('visible');
+            
+            // Generate share URL
+            const shareUrl = generateShareUrl();
+            document.getElementById('shareUrl').value = shareUrl;
+        }
+        
+        function closeSharePanel() {
+            sharePanelVisible = false;
+            document.getElementById('sharePanel').classList.remove('visible');
+            document.getElementById('overlayBackdrop').classList.remove('visible');
+        }
+        
+        function generateShareUrl() {
+            const params = new URLSearchParams({
+                type: fractalType,
+                x: centerX.toFixed(6),
+                y: centerY.toFixed(6),
+                zoom: zoom.toFixed(2),
+                color: colorScheme,
+                iter: maxIterations,
+                escape: escapeRadius.toFixed(1),
+                juliaR: juliaCReal.toFixed(6),
+                juliaI: juliaCImag.toFixed(6),
+                power: bulbPower,
+                slice: sliceZ.toFixed(2)
+            });
+            return window.location.origin + window.location.pathname + '?' + params.toString();
+        }
+        
+        function copyShareUrl() {
+            const urlInput = document.getElementById('shareUrl');
+            urlInput.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => btn.textContent = originalText, 2000);
+        }
+        
+        function shareOnTwitter() {
+            const url = encodeURIComponent(generateShareUrl());
+            const text = encodeURIComponent('Check out this amazing fractal I found!');
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+        
+        function shareOnFacebook() {
+            const url = encodeURIComponent(generateShareUrl());
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+        
+        function openExportPanel() {
+            exportPanelVisible = true;
+            document.getElementById('exportPanel').classList.add('visible');
+            document.getElementById('overlayBackdrop').classList.add('visible');
+        }
+        
+        function closeExportPanel() {
+            exportPanelVisible = false;
+            document.getElementById('exportPanel').classList.remove('visible');
+            document.getElementById('overlayBackdrop').classList.remove('visible');
+        }
+        
+        function exportFractal() {
+            const format = document.querySelector('input[name="exportFormat"]:checked').value;
+            const link = document.createElement('a');
+            
+            if (format === 'svg') {
+                // For SVG, we'd need to implement vector rendering
+                alert('SVG export coming soon!');
+                return;
+            }
+            
+            // Export as PNG or JPG
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = `fractal-${fractalType}-${Date.now()}.${format}`;
+                link.click();
+                URL.revokeObjectURL(url);
+            }, format === 'jpg' ? 'image/jpeg' : 'image/png', 0.9);
+            
+            closeExportPanel();
+        }
+        
+        function updatePerformanceQuality(value) {
+            performanceQuality = parseInt(value);
+            const qualityTexts = ['Low', 'Medium', 'High'];
+            document.getElementById('qualityValue').textContent = qualityTexts[value - 1];
+            
+            // Adjust rendering parameters based on quality
+            switch (performanceQuality) {
+                case 1: // Low
+                    maxIterations = Math.min(maxIterations, 50);
+                    break;
+                case 2: // Medium
+                    maxIterations = Math.min(maxIterations, 150);
+                    break;
+                case 3: // High
+                    maxIterations = Math.min(maxIterations, 500);
+                    break;
+            }
+            
+            document.getElementById('iterations').value = maxIterations;
+            document.getElementById('iterValue').textContent = maxIterations;
+            
+            renderFractal();
+        }
+        
+        function closeAllPanels() {
+            closeSharePanel();
+            closeExportPanel();
+        }
+        
+        // ===== ADVANCED MATH FUNCTIONS =====
+        
+        function updateCustomJulia() {
+            const realInput = document.getElementById('customJuliaReal');
+            const imagInput = document.getElementById('customJuliaImag');
+            
+            const real = parseFloat(realInput.value);
+            const imag = parseFloat(imagInput.value);
+            
+            if (!isNaN(real) && !isNaN(imag)) {
+                customJuliaReal = real;
+                customJuliaImag = imag;
+                juliaCReal = real;
+                juliaCImag = imag;
+                
+                document.getElementById('customJuliaRealValue').textContent = real.toFixed(6);
+                document.getElementById('customJuliaImagValue').textContent = imag.toFixed(6);
+                document.getElementById('complexDisplay').textContent = `Current: c = ${real.toFixed(6)} + ${imag.toFixed(6)}i`;
+                
+                renderFractal();
+            }
+        }
+        
+        function update3DRotation() {
+            rotX = parseInt(document.getElementById('rotX').value);
+            rotY = parseInt(document.getElementById('rotY').value);
+            
+            document.getElementById('rotXValue').textContent = rotX + '°';
+            document.getElementById('rotYValue').textContent = rotY + '°';
+            
+            renderFractal();
+        }
+        
+        function set3DView(plane) {
+            current3DView = plane;
+            
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            renderFractal();
+        }
+        
         // ===== EVENT LISTENERS =====
         
         // Keyboard shortcuts
@@ -1181,6 +1561,14 @@
                 case 'f':
                     e.preventDefault();
                     toggleFullscreen();
+                    break;
+                case 's':
+                    e.preventDefault();
+                    openSharePanel();
+                    break;
+                case 'e':
+                    e.preventDefault();
+                    openExportPanel();
                     break;
                 case '?':
                     e.preventDefault();
@@ -1260,22 +1648,93 @@
         window.addEventListener('resize', resizeCanvas);
         
         // ===== INITIALIZATION =====
-        window.addEventListener('load', () => {
-            setTimeout(resizeCanvas, 100);
+        function loadFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
             
-            // Show keyboard shortcuts help briefly on first load
+            if (urlParams.has('type')) {
+                fractalType = urlParams.get('type');
+                selectFractal(fractalType);
+            }
+            
+            if (urlParams.has('x') && urlParams.has('y')) {
+                centerX = parseFloat(urlParams.get('x'));
+                centerY = parseFloat(urlParams.get('y'));
+            }
+            
+            if (urlParams.has('zoom')) {
+                zoom = parseFloat(urlParams.get('zoom'));
+            }
+            
+            if (urlParams.has('color')) {
+                colorScheme = urlParams.get('color');
+                selectColorScheme(colorScheme);
+            }
+            
+            if (urlParams.has('iter')) {
+                maxIterations = parseInt(urlParams.get('iter'));
+                document.getElementById('iterations').value = maxIterations;
+                document.getElementById('iterValue').textContent = maxIterations;
+            }
+            
+            if (urlParams.has('escape')) {
+                escapeRadius = parseFloat(urlParams.get('escape'));
+                document.getElementById('escapeRadius').value = escapeRadius;
+                document.getElementById('escapeValue').textContent = escapeRadius;
+            }
+            
+            if (urlParams.has('juliaR') && urlParams.has('juliaI')) {
+                juliaCReal = parseFloat(urlParams.get('juliaR'));
+                juliaCImag = parseFloat(urlParams.get('juliaI'));
+                customJuliaReal = juliaCReal;
+                customJuliaImag = juliaCImag;
+                
+                document.getElementById('juliaCReal').value = juliaCReal;
+                document.getElementById('juliaCImag').value = juliaCImag;
+                document.getElementById('juliaCRealValue').textContent = juliaCReal.toFixed(6);
+                document.getElementById('customJuliaRealValue').textContent = juliaCReal.toFixed(6);
+                document.getElementById('juliaCImagValue').textContent = juliaCImag.toFixed(6);
+                document.getElementById('customJuliaImagValue').textContent = juliaCImag.toFixed(6);
+                document.getElementById('complexDisplay').textContent = `Current: c = ${juliaCReal.toFixed(6)} + ${juliaCImag.toFixed(6)}i`;
+            }
+            
+            if (urlParams.has('power')) {
+                bulbPower = parseInt(urlParams.get('power'));
+                document.getElementById('power').value = bulbPower;
+                document.getElementById('powerValue').textContent = bulbPower;
+            }
+            
+            if (urlParams.has('slice')) {
+                sliceZ = parseFloat(urlParams.get('slice'));
+                document.getElementById('sliceZ').value = sliceZ;
+                document.getElementById('sliceZValue').textContent = sliceZ.toFixed(2);
+            }
+        }
+        
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                toggleShortcutsHelp();
-                setTimeout(toggleShortcutsHelp, 3000);
-            }, 1000);
+                resizeCanvas();
+                loadFromURL();
+                
+                // Show keyboard shortcuts help briefly on first load
+                setTimeout(() => {
+                    toggleShortcutsHelp();
+                    setTimeout(toggleShortcutsHelp, 3000);
+                }, 1000);
+            }, 100);
         });
         
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
-                setTimeout(resizeCanvas, 100);
+                setTimeout(() => {
+                    resizeCanvas();
+                    loadFromURL();
+                }, 100);
             });
         } else {
-            setTimeout(resizeCanvas, 100);
+            setTimeout(() => {
+                resizeCanvas();
+                loadFromURL();
+            }, 100);
         }
     </script>
 </body>
