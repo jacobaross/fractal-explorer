@@ -212,10 +212,276 @@
         .preset-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* Full-screen mode styles */
+        .fullscreen-mode .controls {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+
+        .fullscreen-mode .zoom-info {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .fullscreen-mode .fullscreen-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Loading animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #64c8ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Background patterns */
+        .controls::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(100, 200, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 100, 200, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.02) 50%, transparent 60%);
+            pointer-events: none;
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* Enhanced color schemes */
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .color-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            transition: transform 0.3s ease;
+        }
+
+        .color-option:hover::before {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Mobile touch improvements */
+        @media (max-width: 768px) {
+            .controls {
+                padding: 15px;
+                transform: translateY(calc(100% - 50px));
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .fractal-selector {
+                gap: 5px;
+            }
+
+            .fractal-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .color-picker {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .color-option {
+                width: 30px;
+                height: 30px;
+            }
+
+            .zoom-info {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+
+            .fullscreen-btn {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+        }
+
+        /* Smooth color transitions */
+        canvas {
+            transition: filter 0.5s ease;
+        }
+
+        .color-transition {
+            animation: colorShift 2s ease-in-out;
+        }
+
+        @keyframes colorShift {
+            0%, 100% { filter: hue-rotate(0deg) saturate(1); }
+            50% { filter: hue-rotate(180deg) saturate(1.2); }
+        }
+
+        /* Keyboard shortcuts help */
+        .shortcuts-help {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        .shortcuts-help.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .shortcuts-help h4 {
+            margin: 0 0 8px 0;
+            color: #64c8ff;
+        }
+
+        .shortcuts-help ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .shortcuts-help li {
+            margin-bottom: 3px;
+        }
+
+        .shortcuts-help .key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
     <canvas id="fractalCanvas"></canvas>
+    
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Rendering fractal...</div>
+        </div>
+    </div>
+    
+    <!-- Full-screen button -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Fullscreen</button>
+    
+    <!-- Keyboard shortcuts help -->
+    <div class="shortcuts-help" id="shortcutsHelp">
+        <h4>Keyboard Shortcuts</h4>
+        <ul>
+            <li><span class="key">R</span> - Reset view</li>
+            <li><span class="key">Space</span> - Stop animations</li>
+            <li><span class="key">F</span> - Toggle fullscreen</li>
+            <li><span class="key">?</span> - Show/hide this help</li>
+            <li><span class="key">Click</span> - Center view</li>
+            <li><span class="key">Scroll</span> - Zoom in/out</li>
+        </ul>
+    </div>
     
     <div class="zoom-info">
         <div>Zoom: <span id="zoomLevel">1.0x</span></div>
@@ -310,6 +576,9 @@
                     <div class="color-option" style="background: linear-gradient(45deg, #ff4500, #ff8c00, #ffd700)" onclick="selectColorScheme('fire')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #000080, #4169e1, #87ceeb)" onclick="selectColorScheme('ocean')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #4b0082, #8b00ff, #da70d6)" onclick="selectColorScheme('purple')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #00ff00, #00ffff, #ff00ff)" onclick="selectColorScheme('neon')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #8b4513, #daa520, #f4a460)" onclick="selectColorScheme('vintage')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #000033, #660066, #ff0066)" onclick="selectColorScheme('cosmic')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #000, #444, #fff)" onclick="selectColorScheme('mono')"></div>
                 </div>
                 <div class="preset-buttons">
@@ -317,6 +586,7 @@
                     <button class="preset-btn" onclick="goToPreset('seahorse')">Seahorse</button>
                     <button class="preset-btn" onclick="goToPreset('elephant')">Elephant</button>
                     <button class="preset-btn" onclick="goToPreset('lightning')">Lightning</button>
+                    <button class="preset-btn" onclick="goToRandomLocation()" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4);">🎲 Random</button>
                 </div>
                 <div class="preset-buttons">
                     <button class="preset-btn" onclick="stopAllAnimations()" id="stopAllBtn">Stop All Animations</button>
@@ -363,6 +633,12 @@
         let animationFrame = 0;              // Frame counter for motion animations
         let colorAnimationFrame = 0;         // Frame counter for color animations
         let animationId = null;              // RequestAnimationFrame ID for stopping animations
+        
+        // ===== NEW FEATURE PARAMETERS =====
+        let isFullscreen = false;             // Full-screen mode state
+        let isLoading = false;                // Loading state
+        let shortcutsVisible = false;         // Keyboard shortcuts help visibility
+        let lastColorScheme = 'rainbow';      // Previous color scheme for smooth transitions
         
         // ===== CANVAS MANAGEMENT =====
         function resizeCanvas() {
@@ -545,12 +821,41 @@
                         Math.floor(255 * t * 0.3),
                         Math.floor(255 * Math.min(1, t * 1.2))
                     ];
+                case 'neon':
+                    return [
+                        Math.floor(255 * Math.sin(t * Math.PI * 2)),
+                        Math.floor(255 * Math.sin(t * Math.PI * 2 + Math.PI / 3)),
+                        Math.floor(255 * Math.sin(t * Math.PI * 2 + 2 * Math.PI / 3))
+                    ];
+                case 'vintage':
+                    return [
+                        Math.floor(255 * (0.6 + 0.4 * Math.sin(t * Math.PI))),
+                        Math.floor(255 * (0.4 + 0.3 * Math.sin(t * Math.PI + 0.5))),
+                        Math.floor(255 * (0.2 + 0.2 * Math.sin(t * Math.PI + 1)))
+                    ];
+                case 'cosmic':
+                    return [
+                        Math.floor(255 * Math.pow(t, 0.5)),
+                        Math.floor(255 * Math.pow(t, 1.5)),
+                        Math.floor(255 * Math.min(1, Math.pow(t, 0.8) + 0.3))
+                    ];
                 case 'mono':
                     const intensity = Math.floor(255 * t);
                     return [intensity, intensity, intensity];
                 default:
                     return [255, 255, 255];
             }
+        }
+        
+        // ===== LOADING MANAGEMENT =====
+        function showLoading() {
+            isLoading = true;
+            document.getElementById('loadingOverlay').classList.add('visible');
+        }
+        
+        function hideLoading() {
+            isLoading = false;
+            document.getElementById('loadingOverlay').classList.remove('visible');
         }
         
         // ===== MAIN RENDERING FUNCTION =====
@@ -560,31 +865,40 @@
                 return;
             }
             
-            const imageData = ctx.createImageData(canvas.width, canvas.height);
-            const data = imageData.data;
-            
-            const aspectRatio = canvas.width / canvas.height;
-            const zoomScale = scale / zoom;
-            
-            for (let px = 0; px < canvas.width; px++) {
-                for (let py = 0; py < canvas.height; py++) {
-                    const x = centerX + (px - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
-                    const y = centerY - (py - canvas.height / 2) / canvas.height * zoomScale;
-                    
-                    let iterations = getFractalIterations(fractalType, x, y);
-                    
-                    const [r, g, b] = getColor(iterations);
-                    const index = (py * canvas.width + px) * 4;
-                    
-                    data[index] = r;
-                    data[index + 1] = g;
-                    data[index + 2] = b;
-                    data[index + 3] = 255;
-                }
+            // Show loading for complex renders
+            if (maxIterations > 200 || zoom > 100) {
+                showLoading();
             }
             
-            ctx.putImageData(imageData, 0, 0);
-            updateZoomInfo();
+            // Use setTimeout to allow UI to update before heavy computation
+            setTimeout(() => {
+                const imageData = ctx.createImageData(canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                const aspectRatio = canvas.width / canvas.height;
+                const zoomScale = scale / zoom;
+                
+                for (let px = 0; px < canvas.width; px++) {
+                    for (let py = 0; py < canvas.height; py++) {
+                        const x = centerX + (px - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
+                        const y = centerY - (py - canvas.height / 2) / canvas.height * zoomScale;
+                        
+                        let iterations = getFractalIterations(fractalType, x, y);
+                        
+                        const [r, g, b] = getColor(iterations);
+                        const index = (py * canvas.width + px) * 4;
+                        
+                        data[index] = r;
+                        data[index + 1] = g;
+                        data[index + 2] = b;
+                        data[index + 3] = 255;
+                    }
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                updateZoomInfo();
+                hideLoading();
+            }, 10);
         }
         
         // ===== UI UPDATE FUNCTIONS =====
@@ -653,10 +967,15 @@
         }
         
         function selectColorScheme(scheme) {
+            lastColorScheme = colorScheme;
             colorScheme = scheme;
             
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // Add smooth color transition effect
+            canvas.classList.add('color-transition');
+            setTimeout(() => canvas.classList.remove('color-transition'), 2000);
             
             renderFractal();
         }
@@ -682,6 +1001,53 @@
             centerY = 0;
             zoom = 1;
             renderFractal();
+        }
+        
+        // ===== NEW FEATURE FUNCTIONS =====
+        
+        function toggleFullscreen() {
+            isFullscreen = !isFullscreen;
+            document.body.classList.toggle('fullscreen-mode', isFullscreen);
+            
+            const btn = document.getElementById('fullscreenBtn');
+            if (isFullscreen) {
+                btn.textContent = '⛶ Exit Fullscreen';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+            } else {
+                btn.textContent = '⛶ Fullscreen';
+                btn.style.background = 'rgba(0, 0, 0, 0.7)';
+            }
+        }
+        
+        function goToRandomLocation() {
+            const randomLocations = [
+                { centerX: -0.8, centerY: 0.156, zoom: 100, name: 'Spiral Valley' },
+                { centerX: -0.75, centerY: 0.1, zoom: 200, name: 'Seahorse Valley' },
+                { centerX: 0.257, centerY: 0.0, zoom: 300, name: 'Elephant Valley' },
+                { centerX: -1.775, centerY: 0.0, zoom: 150, name: 'Lightning Bolt' },
+                { centerX: -0.5, centerY: 0.5, zoom: 50, name: 'Mountain Range' },
+                { centerX: 0.285, centerY: 0.01, zoom: 400, name: 'Deep Valley' },
+                { centerX: -0.1, centerY: 0.8, zoom: 80, name: 'Northern Lights' },
+                { centerX: 0.4, centerY: -0.3, zoom: 120, name: 'Southern Cross' }
+            ];
+            
+            const randomLocation = randomLocations[Math.floor(Math.random() * randomLocations.length)];
+            centerX = randomLocation.centerX;
+            centerY = randomLocation.centerY;
+            zoom = randomLocation.zoom;
+            
+            // Also randomize color scheme
+            const colorSchemes = ['rainbow', 'fire', 'ocean', 'purple', 'neon', 'vintage', 'cosmic'];
+            const randomColor = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+            selectColorScheme(randomColor);
+            
+            renderFractal();
+        }
+        
+        function toggleShortcutsHelp() {
+            shortcutsVisible = !shortcutsVisible;
+            const help = document.getElementById('shortcutsHelp');
+            help.classList.toggle('visible', shortcutsVisible);
         }
         
         // ===== ANIMATION FUNCTIONS =====
@@ -800,6 +1166,67 @@
         }
         
         // ===== EVENT LISTENERS =====
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch (e.key.toLowerCase()) {
+                case 'r':
+                    e.preventDefault();
+                    resetView();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    stopAllAnimations();
+                    break;
+                case 'f':
+                    e.preventDefault();
+                    toggleFullscreen();
+                    break;
+                case '?':
+                    e.preventDefault();
+                    toggleShortcutsHelp();
+                    break;
+            }
+        });
+        
+        // Touch events for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            touchStartTime = Date.now();
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            const touchEndTime = Date.now();
+            const touchDuration = touchEndTime - touchStartTime;
+            
+            // If it's a quick tap (less than 200ms), treat as click
+            if (touchDuration < 200) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = touch.clientX - rect.left;
+                const clickY = touch.clientY - rect.top;
+                
+                const aspectRatio = canvas.width / canvas.height;
+                const zoomScale = scale / zoom;
+                
+                const newCenterX = centerX + (clickX - canvas.width / 2) / canvas.width * zoomScale * aspectRatio;
+                const newCenterY = centerY - (clickY - canvas.height / 2) / canvas.height * zoomScale;
+                
+                centerX = newCenterX;
+                centerY = newCenterY;
+                
+                renderFractal();
+            }
+        });
+        
         canvas.addEventListener('click', (e) => {
             const rect = canvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -835,6 +1262,12 @@
         // ===== INITIALIZATION =====
         window.addEventListener('load', () => {
             setTimeout(resizeCanvas, 100);
+            
+            // Show keyboard shortcuts help briefly on first load
+            setTimeout(() => {
+                toggleShortcutsHelp();
+                setTimeout(toggleShortcutsHelp, 3000);
+            }, 1000);
         });
         
         if (document.readyState === 'loading') {
