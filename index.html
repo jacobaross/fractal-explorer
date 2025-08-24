@@ -496,11 +496,7 @@
         Performance: <span id="performanceLevel">High</span>
     </div>
     
-    <!-- Fractal history controls -->
-    <div class="history-controls">
-        <button class="history-btn" onclick="goBack()" id="backBtn">← Back</button>
-        <button class="history-btn" onclick="goForward()" id="forwardBtn">Forward →</button>
-    </div>
+
     
     <!-- Share panel -->
     <div class="overlay-backdrop" id="overlayBackdrop" onclick="closeAllPanels()"></div>
@@ -644,14 +640,14 @@
             <div class="control-group">
                 <h3>Color Schemes & Presets</h3>
                 <div class="color-picker">
-                    <div class="color-option active" style="background: linear-gradient(45deg, #ff0080, #0080ff, #80ff00)" onclick="selectColorScheme('rainbow')"></div>
+                    <div class="color-option" style="background: linear-gradient(45deg, #ff0080, #0080ff, #80ff00)" onclick="selectColorScheme('rainbow')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #ff4500, #ff8c00, #ffd700)" onclick="selectColorScheme('fire')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #000080, #4169e1, #87ceeb)" onclick="selectColorScheme('ocean')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #4b0082, #8b00ff, #da70d6)" onclick="selectColorScheme('purple')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #00ff00, #00ffff, #ff00ff)" onclick="selectColorScheme('neon')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #8b4513, #daa520, #f4a460)" onclick="selectColorScheme('vintage')"></div>
                     <div class="color-option" style="background: linear-gradient(45deg, #000033, #660066, #ff0066)" onclick="selectColorScheme('cosmic')"></div>
-                    <div class="color-option" style="background: linear-gradient(45deg, #000, #444, #fff)" onclick="selectColorScheme('mono')"></div>
+                    <div class="color-option active" style="background: linear-gradient(45deg, #000, #444, #fff)" onclick="selectColorScheme('mono')"></div>
                 </div>
                 <div class="preset-buttons">
                     <button class="preset-btn" onclick="goToPreset('spiral')">Spiral</button>
@@ -726,7 +722,7 @@
         let fractalType = 'mandelbrot';        // Currently selected fractal type
         let maxIterations = 100;               // Maximum iterations before considering a point as in the set
         let escapeRadius = 2.0;               // Radius beyond which a point is considered to escape
-        let colorScheme = 'rainbow';          // Current color scheme for rendering
+        let colorScheme = 'mono';             // Current color scheme for rendering
         
         // Julia set specific parameters
         let juliaCReal = -0.7;                // Real component of Julia set constant c
@@ -756,7 +752,7 @@
         let isFullscreen = false;             // Full-screen mode state
         let isLoading = false;                // Loading state
         let shortcutsVisible = false;         // Keyboard shortcuts help visibility
-        let lastColorScheme = 'rainbow';      // Previous color scheme for smooth transitions
+        let lastColorScheme = 'mono';         // Previous color scheme for smooth transitions
         
         // ===== INTERMEDIATE FEATURE PARAMETERS =====
         let fractalHistory = [];              // Array to store fractal view history
